@@ -1,6 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import { home, login } from '@/routes';
 import * as blog from '@/routes/blog';
-import { dashboard, login } from '@/routes';
+import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import type { Post } from '@/types';
 
 type PageProps = {
@@ -18,16 +19,16 @@ export default function BlogShow() {
             <div className="min-h-screen bg-[#FDFDFC] text-[#1b1b18] dark:bg-[#0a0a0a] dark:text-[#EDEDEC]">
                 <header className="border-b border-neutral-200 dark:border-neutral-800">
                     <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-                        <Link href={blog.index()} className="text-lg font-semibold">
+                        <Link href={home()} className="text-lg font-semibold">
                             Blog
                         </Link>
                         <nav className="flex items-center gap-4 text-sm">
                             {auth.user ? (
                                 <Link
-                                    href={dashboard()}
+                                    href={PostController.index.url()}
                                     className="rounded-sm border border-neutral-300 px-4 py-1.5 hover:border-neutral-500 dark:border-neutral-700 dark:hover:border-neutral-500"
                                 >
-                                    Dashboard
+                                    Admin
                                 </Link>
                             ) : (
                                 <Link
@@ -43,7 +44,7 @@ export default function BlogShow() {
 
                 <main className="mx-auto max-w-3xl px-6 py-12">
                     <Link
-                        href={blog.index()}
+                        href={home()}
                         className="mb-8 inline-block text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
                     >
                         ← Back to blog
