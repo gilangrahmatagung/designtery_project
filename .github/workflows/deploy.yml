@@ -56,7 +56,6 @@ jobs:
           port: 21
           server-dir: /laravel-app/
           timeout: 1800000
-          delete-remote: true
           exclude: |
             **/.git*
             **/.github/**
@@ -82,4 +81,3 @@ jobs:
           local-dir: ./.deploy/public_html/
           server-dir: /public_html/
           timeout: 1800000
-          delete-remote: true
