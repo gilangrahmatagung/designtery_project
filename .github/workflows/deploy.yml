@@ -57,19 +57,33 @@ jobs:
           server-dir: /laravel-app/
           timeout: 1800000
           exclude: |
-            **/.git*
-            **/.github/**
-            **/node_modules/**
-            **/tests/**
-            **/.phpunit.cache/**
-            **/.env*
-            **/.deploy/**
-            **/*.md
-            **/storage/framework/cache/**
-            **/storage/framework/sessions/**
-            **/storage/framework/views/**
-            **/storage/logs/**
-
+                      **/.git*
+                      **/.git*/**
+                      **/.github/**
+                      **/.agents/**
+                      **/.claude/**
+                      **/.codex/**
+                      **/.grok/**
+                      **/.pi/**
+                      **/.factory/**
+                      **/.amp/**
+                      **/node_modules/**
+                      **/tests/**
+                      **/.phpunit.cache/**
+                      **/.env*
+                      **/.deploy/**
+                      **/*.md
+                      **/storage/framework/cache/**
+                      **/storage/framework/sessions/**
+                      **/storage/framework/views/**
+                      **/storage/logs/**
+                      **/public/**
+                      .mcp.json
+                      opencode.json
+                      boost.json
+                      pint.json
+                      eslint.config.js
+                      pnpm-workspace.yaml
       - name: Deploy to cPanel (public_html)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
