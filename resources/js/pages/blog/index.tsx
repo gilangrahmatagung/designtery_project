@@ -1,7 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import { home, login } from '@/routes';
 import * as blog from '@/routes/blog';
-import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import type { PaginatedPosts, Post } from '@/types';
 
 type PageProps = {

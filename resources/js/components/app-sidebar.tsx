@@ -1,4 +1,6 @@
-import { NotebookPen } from 'lucide-react';
+import { FolderOpen, NotebookPen } from 'lucide-react';
+import CategoryController from '@/actions/App/Http/Controllers/Blog/CategoryController';
+import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -6,11 +8,7 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -18,6 +16,11 @@ const mainNavItems: NavItem[] = [
         title: 'Posts',
         href: PostController.index.url(),
         icon: NotebookPen,
+    },
+    {
+        title: 'Categories',
+        href: CategoryController.index.url(),
+        icon: FolderOpen,
     },
 ];
 

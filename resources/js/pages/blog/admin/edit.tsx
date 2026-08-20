@@ -6,14 +6,15 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { Post } from '@/types';
+import type { Category, Post } from '@/types';
 
 type PageProps = {
     post: Post;
+    categories: Pick<Category, 'id' | 'name'>[];
 };
 
 export default function AdminPostEdit() {
-    const { post } = usePage<PageProps>().props;
+    const { post, categories } = usePage<PageProps>().props;
 
     return (
         <>
@@ -43,27 +44,21 @@ export default function AdminPostEdit() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="slug">Slug</Label>
-                                <Input
-                                    id="slug"
-                                    name="slug"
-                                    defaultValue={post.slug}
-                                    placeholder="my-post-slug"
-                                />
-                                <InputError message={errors.slug} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="excerpt">Excerpt</Label>
-                                <textarea
-                                    id="excerpt"
-                                    name="excerpt"
-                                    rows={3}
-                                    defaultValue={post.excerpt ?? ''}
-                                    placeholder="Short description of the post..."
-                                    className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-none"
-                                />
-                                <InputError message={errors.excerpt} />
+                                <Label htmlFor="category_id">Category</Label>
+                                <select
+                                    id="category_id"
+                                    name="category_id"
+                                    defaultValue={post.category_id ?? ''}
+                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                >
+                                    <option value="">No category</option>
+                                    {categories.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <InputError message={errors.category_id} />
                             </div>
 
                             <div className="grid gap-2">

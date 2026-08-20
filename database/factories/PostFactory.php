@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\PostStatus;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -56,6 +57,16 @@ class PostFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status' => PostStatus::Draft,
             'published_at' => null,
+        ]);
+    }
+
+    /**
+     * Assign the post to the given category.
+     */
+    public function withCategory(?Category $category = null): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'category_id' => $category?->id ?? Category::factory()->create()->id,
         ]);
     }
 }

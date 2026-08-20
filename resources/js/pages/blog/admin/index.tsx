@@ -1,9 +1,9 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { PlusIcon, PencilIcon, TrashIcon, EyeIcon } from 'lucide-react';
-import AppLayout from '@/layouts/app-layout';
+import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
+import AppLayout from '@/layouts/app-layout';
 import * as blog from '@/routes/blog';
 import type { PaginatedPosts, Post } from '@/types';
 
@@ -21,7 +21,10 @@ function StatusBadge({ status }: { status: Post['status'] }) {
 
 function PostRow({ post }: { post: Post }) {
     function handleDelete() {
-        if (!confirm(`Delete "${post.title}"?`)) return;
+        if (!confirm(`Delete "${post.title}"?`)) {
+return;
+}
+
         router.delete(PostController.destroy.url(post), {
             preserveScroll: true,
         });
@@ -34,6 +37,9 @@ function PostRow({ post }: { post: Post }) {
                     {post.title}
                 </div>
                 <div className="mt-0.5 text-xs text-neutral-500">{post.slug}</div>
+            </td>
+            <td className="py-3 pr-4 text-sm text-neutral-500">
+                {post.category?.name ?? '—'}
             </td>
             <td className="py-3 pr-4">
                 <StatusBadge status={post.status} />
@@ -104,7 +110,7 @@ export default function AdminPostsIndex() {
                     </Button>
                 </div>
 
-                <div className="rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900">
+                <div className="rounded-xl border border-neutral-200 px-4  bg-white dark:border-neutral-800 dark:bg-neutral-900">
                     {posts.data.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-16 text-neutral-500">
                             <p className="mb-4 text-sm">No posts yet.</p>
@@ -120,6 +126,9 @@ export default function AdminPostsIndex() {
                                 <tr className="border-b border-neutral-200 dark:border-neutral-800">
                                     <th className="py-3 pr-4 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
                                         Title
+                                    </th>
+                                    <th className="py-3 pr-4 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
+                                        Category
                                     </th>
                                     <th className="py-3 pr-4 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
                                         Status

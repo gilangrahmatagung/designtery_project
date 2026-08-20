@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Blog;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Blog\StoreBlogPostRequest;
 use App\Http\Requests\Blog\UpdateBlogPostRequest;
+use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -18,6 +19,7 @@ class PostController extends Controller
     public function index(): Response
     {
         $posts = Post::query()
+            ->with('category')
             ->latest()
             ->paginate(15);
 
@@ -31,7 +33,9 @@ class PostController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('blog/admin/create');
+        return Inertia::render('blog/admin/create', [
+            'categories' => $this->categoryOptions(),
+        ]);
     }
 
     /**
@@ -53,6 +57,7 @@ class PostController extends Controller
     {
         return Inertia::render('blog/admin/edit', [
             'post' => $post,
+            'categories' => $this->categoryOptions(),
         ]);
     }
 
@@ -78,5 +83,18 @@ class PostController extends Controller
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Post deleted successfully.']);
 
         return to_route('admin.posts.index');
+    }
+
+    /**
+     * Get the available category options for selects.
+     *
+     * @return array<int, array{id: int, name: string}>
+     */
+    private function categoryOptions(): array
+    {
+        return Category::query()
+            ->orderBy('name')
+            ->get(['id', 'name'])
+            ->toArray();
     }
 }

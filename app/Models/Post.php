@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
  * @property int $id
+ * @property int|null $category_id
  * @property string $title
  * @property string $slug
  * @property string|null $excerpt
@@ -23,7 +25,7 @@ use Illuminate\Support\Str;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['title', 'slug', 'excerpt', 'content', 'featured_image', 'status', 'published_at'])]
+#[Fillable(['category_id', 'title', 'slug', 'excerpt', 'content', 'featured_image', 'status', 'published_at'])]
 class Post extends Model
 {
     /** @use HasFactory<PostFactory> */
@@ -76,6 +78,16 @@ class Post extends Model
         }
 
         return $slug;
+    }
+
+    /**
+     * Get the category that the post belongs to.
+     *
+     * @return BelongsTo<Category, $this>
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**

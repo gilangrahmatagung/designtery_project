@@ -26,12 +26,14 @@ class StoreBlogPostRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'max:255', 'unique:posts,slug'],
             'excerpt' => ['nullable', 'string'],
             'content' => ['required', 'string'],
             'featured_image' => ['nullable', 'string', 'max:255'],
             'status' => ['required', Rule::enum(PostStatus::class)],
+            'published_at' => ['nullable', 'date'],
         ];
     }
 
