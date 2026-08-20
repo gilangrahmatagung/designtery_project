@@ -77,7 +77,6 @@ jobs:
                       **/storage/framework/sessions/**
                       **/storage/framework/views/**
                       **/storage/logs/**
-                      **/public/**
                       .mcp.json
                       opencode.json
                       boost.json
