@@ -30,7 +30,7 @@ jobs:
           cache: npm
 
       - name: Install JS dependencies
-        run: npm ci
+        run: npm install
 
       - name: Prepare .env for build
         run: cp .env.example .env
