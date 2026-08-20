@@ -8,6 +8,7 @@ use App\Http\Requests\Blog\UpdateBlogPostRequest;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -43,7 +44,13 @@ class PostController extends Controller
      */
     public function store(StoreBlogPostRequest $request): RedirectResponse
     {
-        Post::create($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('featured_image')) {
+            $data['featured_image'] = $request->file('featured_image')->store('posts', 'public');
+        }
+
+        Post::create($data);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Post created successfully.']);
 
@@ -66,7 +73,23 @@ class PostController extends Controller
      */
     public function update(UpdateBlogPostRequest $request, Post $post): RedirectResponse
     {
-        $post->update($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('featured_image')) {
+            if ($post->featured_image && ! str_starts_with($post->featured_image, 'http')) {
+                Storage::disk('public')->delete($post->featured_image);
+            }
+
+            $data['featured_image'] = $request->file('featured_image')->store('posts', 'public');
+        } elseif ($request->boolean('remove_featured_image') && $post->featured_image) {
+            if (! str_starts_with($post->featured_image, 'http')) {
+                Storage::disk('public')->delete($post->featured_image);
+            }
+
+            $data['featured_image'] = null;
+        }
+
+        $post->update($data);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Post updated successfully.']);
 
@@ -78,6 +101,10 @@ class PostController extends Controller
      */
     public function destroy(Post $post): RedirectResponse
     {
+        if ($post->featured_image && ! str_starts_with($post->featured_image, 'http')) {
+            Storage::disk('public')->delete($post->featured_image);
+        }
+
         $post->delete();
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Post deleted successfully.']);

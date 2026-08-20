@@ -3,6 +3,8 @@
 use App\Enums\PostStatus;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 
 // --- Model & Factory ---
@@ -56,7 +58,7 @@ test('published scope returns only published posts', function () {
 test('guests can view published posts list', function () {
     Post::factory()->published()->count(3)->create();
 
-    $this->get(route('blog.index'))
+    $this->get(route('home'))
         ->assertInertia(fn (Assert $page) => $page->component('blog/index'));
 });
 
@@ -198,4 +200,110 @@ test('authenticated user can delete a post', function () {
         ->assertRedirect(route('admin.posts.index'));
 
     expect(Post::find($post->id))->toBeNull();
+});
+
+// --- Featured image uploads ---
+
+test('store post uploads and saves the featured image', function () {
+    Storage::fake('public');
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->post(route('admin.posts.store'), [
+            'title' => 'Post With Image',
+            'content' => 'Content.',
+            'status' => PostStatus::Draft->value,
+            'featured_image' => UploadedFile::fake()->image('cover.jpg'),
+        ])
+        ->assertRedirect(route('admin.posts.index'));
+
+    $post = Post::where('title', 'Post With Image')->firstOrFail();
+
+    expect($post->featured_image)->not->toBeNull()
+        ->and($post->featured_image)->toStartWith('posts/');
+
+    Storage::disk('public')->assertExists($post->featured_image);
+});
+
+test('store post fails validation when featured image is not an image', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->post(route('admin.posts.store'), [
+            'title' => 'Bad Image',
+            'content' => 'Content.',
+            'status' => PostStatus::Draft->value,
+            'featured_image' => UploadedFile::fake()->create('document.pdf', 100),
+        ])
+        ->assertSessionHasErrors('featured_image');
+});
+
+test('update post replaces featured image and deletes the old file', function () {
+    Storage::fake('public');
+    $user = User::factory()->create();
+    $post = Post::factory()->create(['featured_image' => 'posts/old-cover.jpg']);
+    Storage::disk('public')->put('posts/old-cover.jpg', 'fake');
+
+    $this->actingAs($user)
+        ->put(route('admin.posts.update', $post), [
+            'title' => $post->title,
+            'content' => 'Updated content.',
+            'status' => PostStatus::Draft->value,
+            'featured_image' => UploadedFile::fake()->image('new-cover.jpg'),
+        ])
+        ->assertRedirect(route('admin.posts.index'));
+
+    $post->refresh();
+
+    expect($post->featured_image)->not->toBeNull()
+        ->and($post->featured_image)->not->toBe('posts/old-cover.jpg');
+
+    Storage::disk('public')->assertMissing('posts/old-cover.jpg');
+    Storage::disk('public')->assertExists($post->featured_image);
+});
+
+test('update post removes featured image when remove flag is set', function () {
+    Storage::fake('public');
+    $user = User::factory()->create();
+    $post = Post::factory()->create(['featured_image' => 'posts/old-cover.jpg']);
+    Storage::disk('public')->put('posts/old-cover.jpg', 'fake');
+
+    $this->actingAs($user)
+        ->put(route('admin.posts.update', $post), [
+            'title' => $post->title,
+            'content' => 'Updated content.',
+            'status' => PostStatus::Draft->value,
+            'remove_featured_image' => '1',
+        ])
+        ->assertRedirect(route('admin.posts.index'));
+
+    expect($post->fresh()->featured_image)->toBeNull();
+
+    Storage::disk('public')->assertMissing('posts/old-cover.jpg');
+});
+
+test('delete post removes its featured image file', function () {
+    Storage::fake('public');
+    $user = User::factory()->create();
+    $post = Post::factory()->create(['featured_image' => 'posts/cover.jpg']);
+    Storage::disk('public')->put('posts/cover.jpg', 'fake');
+
+    $this->actingAs($user)
+        ->delete(route('admin.posts.destroy', $post))
+        ->assertRedirect(route('admin.posts.index'));
+
+    Storage::disk('public')->assertMissing('posts/cover.jpg');
+});
+
+test('featured_image_url resolves a storage url for stored paths', function () {
+    Storage::fake('public');
+    $post = Post::factory()->create(['featured_image' => 'posts/cover.jpg']);
+
+    expect($post->featured_image_url)->toBe(Storage::disk('public')->url('posts/cover.jpg'));
+});
+
+test('featured_image_url returns the raw value for absolute urls', function () {
+    $post = Post::factory()->create(['featured_image' => 'https://example.com/cover.jpg']);
+
+    expect($post->featured_image_url)->toBe('https://example.com/cover.jpg');
 });

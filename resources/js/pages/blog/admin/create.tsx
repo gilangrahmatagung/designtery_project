@@ -1,4 +1,5 @@
 import { Form, Head, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -13,6 +14,7 @@ type PageProps = {
 
 export default function AdminPostCreate() {
     const { categories } = usePage<PageProps>().props;
+    const [featuredImagePreview, setFeaturedImagePreview] = useState<string | null>(null);
 
     return (
         <>
@@ -23,6 +25,7 @@ export default function AdminPostCreate() {
 
                 <Form
                     {...PostController.store.form()}
+                    encType="multipart/form-data"
                     options={{ preserveScroll: true }}
                     className="max-w-2xl space-y-6"
                 >
@@ -38,6 +41,33 @@ export default function AdminPostCreate() {
                                     autoFocus
                                 />
                                 <InputError message={errors.title} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="featured_image">Featured Image</Label>
+                                <Input
+                                    id="featured_image"
+                                    name="featured_image"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(event) => {
+                                        const file = event.target.files?.[0];
+
+                                        if (file) {
+                                            setFeaturedImagePreview(URL.createObjectURL(file));
+                                        } else {
+                                            setFeaturedImagePreview(null);
+                                        }
+                                    }}
+                                />
+                                {featuredImagePreview && (
+                                    <img
+                                        src={featuredImagePreview}
+                                        alt="Featured image preview"
+                                        className="mt-2 max-h-48 w-full rounded-md border border-neutral-200 object-cover dark:border-neutral-800"
+                                    />
+                                )}
+                                <InputError message={errors.featured_image} />
                             </div>
 
                             <div className="grid gap-2">

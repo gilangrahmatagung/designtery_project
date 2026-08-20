@@ -29,6 +29,7 @@ export interface Post {
     excerpt: string | null;
     content: string;
     featured_image: string | null;
+    featured_image_url: string | null;
     status: PostStatus;
     published_at: string | null;
     created_at: string;

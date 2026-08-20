@@ -31,7 +31,7 @@ class StoreBlogPostRequest extends FormRequest
             'slug' => ['nullable', 'string', 'max:255', 'unique:posts,slug'],
             'excerpt' => ['nullable', 'string'],
             'content' => ['required', 'string'],
-            'featured_image' => ['nullable', 'string', 'max:255'],
+            'featured_image' => ['nullable', 'image', 'max:5120'],
             'status' => ['required', Rule::enum(PostStatus::class)],
             'published_at' => ['nullable', 'date'],
         ];

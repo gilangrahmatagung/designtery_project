@@ -72,9 +72,9 @@ export default function BlogShow() {
                             )}
                         </header>
 
-                        {post.featured_image && (
+                        {post.featured_image_url && (
                             <img
-                                src={post.featured_image}
+                                src={post.featured_image_url}
                                 alt={post.title}
                                 className="mb-8 w-full rounded-xl object-cover"
                             />

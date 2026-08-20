@@ -1,5 +1,6 @@
 import { Head, usePage } from '@inertiajs/react';
 import { Form } from '@inertiajs/react';
+import { useState } from 'react';
 import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
@@ -15,6 +16,8 @@ type PageProps = {
 
 export default function AdminPostEdit() {
     const { post, categories } = usePage<PageProps>().props;
+    const [featuredImagePreview, setFeaturedImagePreview] = useState<string | null>(null);
+    const [removeImage, setRemoveImage] = useState(false);
 
     return (
         <>
@@ -25,6 +28,7 @@ export default function AdminPostEdit() {
 
                 <Form
                     {...PostController.update.form(post)}
+                    encType="multipart/form-data"
                     options={{ preserveScroll: true }}
                     className="max-w-2xl space-y-6"
                 >
@@ -41,6 +45,60 @@ export default function AdminPostEdit() {
                                     autoFocus
                                 />
                                 <InputError message={errors.title} />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label htmlFor="featured_image">Featured Image</Label>
+                                <Input
+                                    id="featured_image"
+                                    name="featured_image"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(event) => {
+                                        const file = event.target.files?.[0];
+
+                                        if (file) {
+                                            setFeaturedImagePreview(URL.createObjectURL(file));
+                                            setRemoveImage(false);
+                                        } else {
+                                            setFeaturedImagePreview(null);
+                                        }
+                                    }}
+                                />
+                                {removeImage ? (
+                                    <p className="mt-2 text-sm text-neutral-500">
+                                        The current image will be removed on save.
+                                    </p>
+                                ) : featuredImagePreview ? (
+                                    <img
+                                        src={featuredImagePreview}
+                                        alt="Featured image preview"
+                                        className="mt-2 max-h-48 w-full rounded-md border border-neutral-200 object-cover dark:border-neutral-800"
+                                    />
+                                ) : post.featured_image_url ? (
+                                    <img
+                                        src={post.featured_image_url}
+                                        alt="Current featured image"
+                                        className="mt-2 max-h-48 w-full rounded-md border border-neutral-200 object-cover dark:border-neutral-800"
+                                    />
+                                ) : null}
+                                {post.featured_image && !removeImage && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setRemoveImage(true)}
+                                        className="mt-2 text-left text-sm text-red-600 hover:underline dark:text-red-400"
+                                    >
+                                        Remove image
+                                    </button>
+                                )}
+                                {removeImage && (
+                                    <input
+                                        type="hidden"
+                                        name="remove_featured_image"
+                                        value="1"
+                                    />
+                                )}
+                                <InputError message={errors.featured_image} />
                             </div>
 
                             <div className="grid gap-2">

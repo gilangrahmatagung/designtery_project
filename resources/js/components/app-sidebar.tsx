@@ -1,4 +1,5 @@
-import { FolderOpen, NotebookPen } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import { ExternalLink, FolderOpen, NotebookPen } from 'lucide-react';
 import CategoryController from '@/actions/App/Http/Controllers/Blog/CategoryController';
 import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import { NavMain } from '@/components/nav-main';
@@ -8,7 +9,11 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { home } from '@/routes';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -42,6 +47,16 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild>
+                            <Link href={home()} prefetch target="_blank" rel="noopener noreferrer">
+                                <ExternalLink />
+                                <span>See public pages</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
