@@ -1,5 +1,8 @@
 import { Head, usePage } from '@inertiajs/react';
 import { Form } from '@inertiajs/react';
+import MDEditor from '@uiw/react-md-editor';
+import '@uiw/react-md-editor/markdown-editor.css';
+import '@uiw/react-markdown-preview/markdown.css';
 import { useState } from 'react';
 import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import Heading from '@/components/heading';
@@ -7,6 +10,7 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAppearance } from '@/hooks/use-appearance';
 import type { Category, Post } from '@/types';
 
 type PageProps = {
@@ -18,6 +22,8 @@ export default function AdminPostEdit() {
     const { post, categories } = usePage<PageProps>().props;
     const [featuredImagePreview, setFeaturedImagePreview] = useState<string | null>(null);
     const [removeImage, setRemoveImage] = useState(false);
+    const [content, setContent] = useState(post.content);
+    const { resolvedAppearance } = useAppearance();
 
     return (
         <>
@@ -120,16 +126,16 @@ export default function AdminPostEdit() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="content">Content</Label>
-                                <textarea
-                                    id="content"
-                                    name="content"
-                                    rows={18}
-                                    required
-                                    defaultValue={post.content}
-                                    placeholder="Write your post in markdown..."
-                                    className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 font-mono text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 resize-y"
-                                />
+                                <Label>Content</Label>
+                                <input type="hidden" name="content" value={content} />
+                                <div data-color-mode={resolvedAppearance}>
+                                    <MDEditor
+                                        value={content}
+                                        onChange={(val) => setContent(val ?? '')}
+                                        height={400}
+                                        preview="live"
+                                    />
+                                </div>
                                 <InputError message={errors.content} />
                             </div>
 

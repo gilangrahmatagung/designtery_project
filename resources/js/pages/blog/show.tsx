@@ -1,3 +1,4 @@
+import ReactMarkdown from 'react-markdown';
 import { Head, Link, usePage } from '@inertiajs/react';
 import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import { home, login } from '@/routes';
@@ -80,12 +81,14 @@ export default function BlogShow() {
                             />
                         )}
 
-                        {/* Render markdown as plain text for now — will be replaced with proper renderer */}
-                        <div className="prose prose-neutral max-w-none dark:prose-invert">
-                            <pre className="whitespace-pre-wrap font-sans text-base leading-relaxed text-neutral-800 dark:text-neutral-200">
-                                {post.content}
-                            </pre>
-                        </div>
+                        <ReactMarkdown
+                            components={{
+                                h1: (props) => <h1 {...props} className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100" />,
+                                h2: (props) => <h2 {...props} className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100" />
+                            }}
+                        >
+                            { post.content }
+                        </ReactMarkdown>
                     </article>
                 </main>
             </div>
