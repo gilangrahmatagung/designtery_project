@@ -4,3 +4,4 @@ deployment:
     - echo "deploy test berhasil" > /home/desa7677/laravel-app/deploy-log.txt
     - php -v >> /home/desa7677/laravel-app/deploy-log.txt 2>&1
     - which php >> /home/desa7677/laravel-app/deploy-log.txt 2>&1
+    - which composer >> /home/desa7677/laravel-app/deploy-log.txt 2>&1
