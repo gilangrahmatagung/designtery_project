@@ -1,1 +1,1 @@
-/usr/local/bin/php /home/desa_7677/laravel-app/artisan migrate:fresh --force >/dev/null 2>&1
+/usr/local/bin/php /home/desa7677/laravel-app/artisan migrate --force >/dev/null 2>&1

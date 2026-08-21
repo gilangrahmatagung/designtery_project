@@ -1,0 +1,4 @@
+- PHP Web Hosting
+- cPanel
+- No NodeJS support
+- No SSH/terminal access
