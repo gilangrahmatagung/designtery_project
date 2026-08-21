@@ -1,93 +1,93 @@
-name: Deploy Aplikasi ke cPanel Hosting
+# name: Deploy Aplikasi ke cPanel Hosting
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
-          extensions: mbstring, bcmath, pdo_mysql
-          tools: composer
+#       - name: Setup PHP
+#         uses: shivammathur/setup-php@v2
+#         with:
+#           php-version: '8.4'
+#           extensions: mbstring, bcmath, pdo_mysql
+#           tools: composer
 
-      - name: Install PHP dependencies
-        run: composer install --no-dev --no-interaction --optimize-autoloader
+#       - name: Install PHP dependencies
+#         run: composer install --no-dev --no-interaction --optimize-autoloader
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
+#       - name: Setup Node
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 22
+#           cache: npm
 
-      - name: Install JS dependencies
-        run: npm install
+#       - name: Install JS dependencies
+#         run: npm install
 
-      - name: Build frontend
-        run: npm run build
+#       - name: Build frontend
+#         run: npm run build
 
-      - name: Prepare public_html (patch index.php for cPanel layout)
-        run: |
-          mkdir -p .deploy/public_html
-          cp -r public/. .deploy/public_html/
-          sed -i "s|__DIR__.'/../storage/framework/maintenance.php'|__DIR__.'/../laravel-app/storage/framework/maintenance.php'|" .deploy/public_html/index.php
-          sed -i "s|__DIR__.'/../vendor/autoload.php'|__DIR__.'/../laravel-app/vendor/autoload.php'|" .deploy/public_html/index.php
-          sed -i "s|__DIR__.'/../bootstrap/app.php'|__DIR__.'/../laravel-app/bootstrap/app.php'|" .deploy/public_html/index.php
+#       - name: Prepare public_html (patch index.php for cPanel layout)
+#         run: |
+#           mkdir -p .deploy/public_html
+#           cp -r public/. .deploy/public_html/
+#           sed -i "s|__DIR__.'/../storage/framework/maintenance.php'|__DIR__.'/../laravel-app/storage/framework/maintenance.php'|" .deploy/public_html/index.php
+#           sed -i "s|__DIR__.'/../vendor/autoload.php'|__DIR__.'/../laravel-app/vendor/autoload.php'|" .deploy/public_html/index.php
+#           sed -i "s|__DIR__.'/../bootstrap/app.php'|__DIR__.'/../laravel-app/bootstrap/app.php'|" .deploy/public_html/index.php
 
-      - name: Deploy to cPanel (laravel-app)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          server-dir: /laravel-app/
-          timeout: 1800000
-          exclude: |
-                      **/.git*
-                      **/.git*/**
-                      **/.github/**
-                      **/.agents/**
-                      **/.claude/**
-                      **/.codex/**
-                      **/.grok/**
-                      **/.pi/**
-                      **/.factory/**
-                      **/.amp/**
-                      **/node_modules/**
-                      **/tests/**
-                      **/.phpunit.cache/**
-                      **/.env*
-                      **/.deploy/**
-                      **/*.md
-                      **/storage/framework/cache/**
-                      **/storage/framework/sessions/**
-                      **/storage/framework/views/**
-                      **/storage/logs/**
-                      .mcp.json
-                      opencode.json
-                      boost.json
-                      pint.json
-                      eslint.config.js
-                      pnpm-workspace.yaml
-      - name: Deploy to cPanel (public_html)
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          local-dir: ./.deploy/public_html/
-          server-dir: /public_html/
-          timeout: 1800000
+#       - name: Deploy to cPanel (laravel-app)
+#         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+#         with:
+#           server: ${{ secrets.FTP_HOST }}
+#           username: ${{ secrets.FTP_USERNAME }}
+#           password: ${{ secrets.FTP_PASSWORD }}
+#           protocol: ftps
+#           port: 21
+#           server-dir: /laravel-app/
+#           timeout: 1800000
+#           exclude: |
+#                       **/.git*
+#                       **/.git*/**
+#                       **/.github/**
+#                       **/.agents/**
+#                       **/.claude/**
+#                       **/.codex/**
+#                       **/.grok/**
+#                       **/.pi/**
+#                       **/.factory/**
+#                       **/.amp/**
+#                       **/node_modules/**
+#                       **/tests/**
+#                       **/.phpunit.cache/**
+#                       **/.env*
+#                       **/.deploy/**
+#                       **/*.md
+#                       **/storage/framework/cache/**
+#                       **/storage/framework/sessions/**
+#                       **/storage/framework/views/**
+#                       **/storage/logs/**
+#                       .mcp.json
+#                       opencode.json
+#                       boost.json
+#                       pint.json
+#                       eslint.config.js
+#                       pnpm-workspace.yaml
+#       - name: Deploy to cPanel (public_html)
+#         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+#         with:
+#           server: ${{ secrets.FTP_HOST }}
+#           username: ${{ secrets.FTP_USERNAME }}
+#           password: ${{ secrets.FTP_PASSWORD }}
+#           protocol: ftps
+#           port: 21
+#           local-dir: ./.deploy/public_html/
+#           server-dir: /public_html/
+#           timeout: 1800000
