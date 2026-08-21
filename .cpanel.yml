@@ -2,3 +2,5 @@
 deployment:
   tasks:
     - echo "deploy test berhasil"
+    - which composer || echo "composer tidak ditemukan"
+    - composer --version || echo "composer command gagal"
