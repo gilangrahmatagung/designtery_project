@@ -1,6 +1,6 @@
 ---
 deployment:
   tasks:
-    - echo "deploy test berhasil"
-    - which composer || echo "composer tidak ditemukan"
-    - composer --version || echo "composer command gagal"
+    - echo "deploy test berhasil" > /home/desa7677/laravel-app/deploy-log.txt
+    - php -v >> /home/desa7677/laravel-app/deploy-log.txt 2>&1
+    - which php >> /home/desa7677/laravel-app/deploy-log.txt 2>&1
