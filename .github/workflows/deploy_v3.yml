@@ -28,7 +28,7 @@ jobs:
 
       - name: Install & build frontend
         run: |
-          npm ci
+          npm install
           npm run build
 
       - name: Package build artifact ke branch deploy
