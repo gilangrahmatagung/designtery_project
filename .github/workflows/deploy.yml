@@ -32,9 +32,6 @@ jobs:
       - name: Install JS dependencies
         run: npm install
 
-      - name: Prepare .env for build
-        run: cp .env.example .env
-
       - name: Build frontend
         run: npm run build
 
