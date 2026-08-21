@@ -50,6 +50,9 @@ jobs:
 
           for i in 1 2 3 4 5; do
             git fetch origin deploy || true
+            # Bersihkan working tree sebelum checkout agar package-lock.json tidak block
+            git reset --hard HEAD || true
+            git clean -fdx || true
 
             if git show-ref --verify --quiet refs/remotes/origin/deploy; then
               git checkout -B deploy origin/deploy
