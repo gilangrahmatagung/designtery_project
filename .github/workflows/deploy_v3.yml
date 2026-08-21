@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -46,23 +48,38 @@ jobs:
           cp -r . /tmp/build-output/
           rm -rf /tmp/build-output/.git /tmp/build-output/.github
 
-          git fetch origin deploy || true
-          git checkout deploy 2>/dev/null || git checkout --orphan deploy
-
           for i in 1 2 3 4 5; do
             git fetch origin deploy || true
-            git reset --hard origin/deploy 2>/dev/null || true
 
+            if git show-ref --verify --quiet refs/remotes/origin/deploy; then
+              git checkout -B deploy origin/deploy
+              git reset --hard origin/deploy
+            else
+              git checkout --orphan deploy
+              git reset --hard || true
+            fi
+
+            git clean -fdx || true
             find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
             cp -r /tmp/build-output/. .
+            rm -rf node_modules
 
             git add -A -f .
-            git commit -m "Build $(date -u +%Y%m%d%H%M%S)" || echo "Tidak ada perubahan"
+            if ! git commit -m "Build $(date -u +%Y%m%d%H%M%S)"; then
+              echo "Tidak ada perubahan untuk di-commit"
+              exit 0
+            fi
 
             if git push origin deploy; then
-              echo "Push berhasil"
+              echo "Push berhasil (percobaan $i)"
               break
             fi
+
             echo "Push ditolak, coba lagi... (percobaan $i)"
             sleep 5
+
+            if [ "$i" -eq 5 ]; then
+              echo "Gagal push setelah 5 percobaan"
+              exit 1
+            fi
           done
