@@ -57,4 +57,10 @@ jobs:
 
           git add -A
           git commit -m "Build $(date -u +%Y%m%d%H%M%S)" || echo "Tidak ada perubahan untuk di-commit"
-          git push origin deploy
+
+          for i in 1 2 3; do
+            git push origin deploy && break
+            echo "Push ditolak, coba sinkron ulang... (percobaan $i)"
+            git fetch origin deploy
+            git rebase origin/deploy
+          done
