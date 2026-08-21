@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '20'
 
       - name: Install & build frontend
         run: |
@@ -42,25 +42,27 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Simpan hasil build ke folder sementara
           mkdir -p /tmp/build-output
           cp -r . /tmp/build-output/
-          rm -rf /tmp/build-output/.git
+          rm -rf /tmp/build-output/.git /tmp/build-output/.github
 
-          # Checkout branch deploy (buat kalau belum ada)
           git fetch origin deploy || true
-          git checkout deploy 2>/dev/null || git checkout -b deploy
+          git checkout deploy 2>/dev/null || git checkout --orphan deploy
 
-          # Ganti isi branch deploy dengan hasil build terbaru
-          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-          cp -r /tmp/build-output/. .
+          for i in 1 2 3 4 5; do
+            git fetch origin deploy || true
+            git reset --hard origin/deploy 2>/dev/null || true
 
-          git add -A
-          git commit -m "Build $(date -u +%Y%m%d%H%M%S)" || echo "Tidak ada perubahan untuk di-commit"
+            find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+            cp -r /tmp/build-output/. .
 
-          for i in 1 2 3; do
-            git push origin deploy && break
-            echo "Push ditolak, coba sinkron ulang... (percobaan $i)"
-            git fetch origin deploy
-            git rebase origin/deploy
+            git add -A -f .
+            git commit -m "Build $(date -u +%Y%m%d%H%M%S)" || echo "Tidak ada perubahan"
+
+            if git push origin deploy; then
+              echo "Push berhasil"
+              break
+            fi
+            echo "Push ditolak, coba lagi... (percobaan $i)"
+            sleep 5
           done
