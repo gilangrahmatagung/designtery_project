@@ -1,26 +1,25 @@
 ---
 deployment:
   tasks:
-    - cp /home/desa7677/laravel-app/.env /home/desa7677/.env.deploy.bak 2>/dev/null || true
-    - rm -rf /home/desa7677/laravel-app.old 2>/dev/null || true
-    - mv /home/desa7677/laravel-app /home/desa7677/laravel-app.old 2>/dev/null || true
-    - mkdir -p /home/desa7677/laravel-app
-    - cp -a /home/desa7677/repositories/laravel-app/. /home/desa7677/laravel-app/
-    - rm -rf /home/desa7677/laravel-app/.git
-    - cp /home/desa7677/.env.deploy.bak /home/desa7677/laravel-app/.env 2>/dev/null || true
-    - cp -a /home/desa7677/laravel-app.old/storage/app/. /home/desa7677/laravel-app/storage/app/ 2>/dev/null || true
-    - cp -a /home/desa7677/laravel-app.old/storage/logs/. /home/desa7677/laravel-app/storage/logs/ 2>/dev/null || true
-    - rm -rf /home/desa7677/laravel-app.old /home/desa7677/.env.deploy.bak 2>/dev/null || true
-    - cp -a /home/desa7677/laravel-app/public/. /home/desa7677/public_html/
-    - cp -a /home/desa7677/laravel-app/public/.htaccess /home/desa7677/public_html/ 2>/dev/null || true
-    - sed -i "s|__DIR__.'/../vendor|__DIR__.'/../laravel-app/vendor|g" /home/desa7677/public_html/index.php 2>/dev/null || true
-    - sed -i "s|__DIR__.'/../bootstrap|__DIR__.'/../laravel-app/bootstrap|g" /home/desa7677/public_html/index.php 2>/dev/null || true
-    - sed -i "s|__DIR__.'/../storage|__DIR__.'/../laravel-app/storage|g" /home/desa7677/public_html/index.php 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan storage:link 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan config:clear 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan route:clear 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan view:clear 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan config:cache 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan route:cache 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan view:cache 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan migrate --force 2>/dev/null || true
+    - /bin/echo "=== DEPLOY DEBUG 2 ===" > /home/desa7677/deploy-debug.log
+    - /bin/date >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/echo "--- step 1: mkdir ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - mkdir -p /home/desa7677/laravel-app >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/echo "mkdir exit: $?" >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/echo "--- step 2: cp test file ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - cp /home/desa7677/repositories/laravel-app/artisan /home/desa7677/laravel-app/artisan >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/echo "cp single file exit: $?" >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/ls -la /home/desa7677/laravel-app/artisan >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/echo "--- step 3: cp full repo ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/date >> /home/desa7677/deploy-debug.log 2>&1
+    - cp -a /home/desa7677/repositories/laravel-app/. /home/desa7677/laravel-app/ >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "CP FULL FAILED: $?" >> /home/desa7677/deploy-debug.log
+    - /bin/echo "--- step 4: after cp ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/date >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/ls /home/desa7677/laravel-app/ | /usr/bin/wc -l >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/ls /home/desa7677/laravel-app/ >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/echo "--- step 5: which php ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - /usr/bin/which php >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "php not in PATH" >> /home/desa7677/deploy-debug.log
+    - /bin/ls /opt/alt/php84/usr/bin/php >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "php84 alt not found" >> /home/desa7677/deploy-debug.log
+    - /bin/ls /opt/cpanel/ea-php84/root/usr/bin/php >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "ea-php84 not found" >> /home/desa7677/deploy-debug.log
+    - /bin/ls /usr/local/bin/php >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "php local not found" >> /home/desa7677/deploy-debug.log
+    - /bin/echo "=== END DEBUG 2 ===" >> /home/desa7677/deploy-debug.log 2>&1
