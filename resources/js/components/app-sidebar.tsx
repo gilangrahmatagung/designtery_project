@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
-import { ExternalLink, FolderOpen, NotebookPen } from 'lucide-react';
+import { ExternalLink, FolderOpen, NotebookPen, Terminal } from 'lucide-react';
+import OpsController from '@/actions/App/Http/Controllers/Admin/OpsController';
 import CategoryController from '@/actions/App/Http/Controllers/Blog/CategoryController';
 import PostController from '@/actions/App/Http/Controllers/Blog/PostController';
 import { NavMain } from '@/components/nav-main';
@@ -26,6 +27,11 @@ const mainNavItems: NavItem[] = [
         title: 'Categories',
         href: CategoryController.index.url(),
         icon: FolderOpen,
+    },
+    {
+        title: 'System & Ops',
+        href: OpsController.index.url(),
+        icon: Terminal,
     },
 ];
 
