@@ -12,6 +12,7 @@ return array(
     'App\\Concerns\\PasswordValidationRules' => $baseDir . '/app/Concerns/PasswordValidationRules.php',
     'App\\Concerns\\ProfileValidationRules' => $baseDir . '/app/Concerns/ProfileValidationRules.php',
     'App\\Enums\\PostStatus' => $baseDir . '/app/Enums/PostStatus.php',
+    'App\\Http\\Controllers\\Admin\\OpsController' => $baseDir . '/app/Http/Controllers/Admin/OpsController.php',
     'App\\Http\\Controllers\\Blog\\CategoryController' => $baseDir . '/app/Http/Controllers/Blog/CategoryController.php',
     'App\\Http\\Controllers\\Blog\\PostController' => $baseDir . '/app/Http/Controllers/Blog/PostController.php',
     'App\\Http\\Controllers\\Blog\\PublicPostController' => $baseDir . '/app/Http/Controllers/Blog/PublicPostController.php',

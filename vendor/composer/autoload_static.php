@@ -599,6 +599,7 @@ class ComposerStaticInit8391899b8db87eb74cefae7c4faca815
         'App\\Concerns\\PasswordValidationRules' => __DIR__ . '/../..' . '/app/Concerns/PasswordValidationRules.php',
         'App\\Concerns\\ProfileValidationRules' => __DIR__ . '/../..' . '/app/Concerns/ProfileValidationRules.php',
         'App\\Enums\\PostStatus' => __DIR__ . '/../..' . '/app/Enums/PostStatus.php',
+        'App\\Http\\Controllers\\Admin\\OpsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/OpsController.php',
         'App\\Http\\Controllers\\Blog\\CategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Blog/CategoryController.php',
         'App\\Http\\Controllers\\Blog\\PostController' => __DIR__ . '/../..' . '/app/Http/Controllers/Blog/PostController.php',
         'App\\Http\\Controllers\\Blog\\PublicPostController' => __DIR__ . '/../..' . '/app/Http/Controllers/Blog/PublicPostController.php',
