@@ -1,25 +1,4 @@
 ---
 deployment:
   tasks:
-    - /bin/echo "=== DEPLOY DEBUG 2 ===" > /home/desa7677/deploy-debug.log
-    - /bin/date >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/echo "--- step 1: mkdir ---" >> /home/desa7677/deploy-debug.log 2>&1
-    - mkdir -p /home/desa7677/laravel-app >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/echo "mkdir exit: $?" >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/echo "--- step 2: cp test file ---" >> /home/desa7677/deploy-debug.log 2>&1
-    - cp /home/desa7677/repositories/laravel-app/artisan /home/desa7677/laravel-app/artisan >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/echo "cp single file exit: $?" >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/ls -la /home/desa7677/laravel-app/artisan >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/echo "--- step 3: cp full repo ---" >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/date >> /home/desa7677/deploy-debug.log 2>&1
-    - cp -a /home/desa7677/repositories/laravel-app/. /home/desa7677/laravel-app/ >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "CP FULL FAILED: $?" >> /home/desa7677/deploy-debug.log
-    - /bin/echo "--- step 4: after cp ---" >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/date >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/ls /home/desa7677/laravel-app/ | /usr/bin/wc -l >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/ls /home/desa7677/laravel-app/ >> /home/desa7677/deploy-debug.log 2>&1
-    - /bin/echo "--- step 5: which php ---" >> /home/desa7677/deploy-debug.log 2>&1
-    - /usr/bin/which php >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "php not in PATH" >> /home/desa7677/deploy-debug.log
-    - /bin/ls /opt/alt/php84/usr/bin/php >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "php84 alt not found" >> /home/desa7677/deploy-debug.log
-    - /bin/ls /opt/cpanel/ea-php84/root/usr/bin/php >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "ea-php84 not found" >> /home/desa7677/deploy-debug.log
-    - /bin/ls /usr/local/bin/php >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "php local not found" >> /home/desa7677/deploy-debug.log
-    - /bin/echo "=== END DEBUG 2 ===" >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/sh /home/desa7677/repositories/laravel-app/deploy.sh
