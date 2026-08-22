@@ -1,16 +1,18 @@
 ---
 deployment:
   tasks:
-    - /usr/bin/rsync -a --delete --exclude='.env' --exclude='storage/logs' --exclude='storage/app' --exclude='storage/framework/sessions' /home/desa7677/repositories/laravel-app/ /home/desa7677/laravel-app/ || true
-    - cp -a /home/desa7677/laravel-app/public/. /home/desa7677/public_html/ || true
-    - cp -a /home/desa7677/laravel-app/public/.htaccess /home/desa7677/public_html/ 2>/dev/null || true
-    - sed -i "s|__DIR__.'/../vendor|__DIR__.'/../laravel-app/vendor|g" /home/desa7677/public_html/index.php 2>/dev/null || true
-    - sed -i "s|__DIR__.'/../bootstrap|__DIR__.'/../laravel-app/bootstrap|g" /home/desa7677/public_html/index.php 2>/dev/null || true
-    - sed -i "s|__DIR__.'/../storage|__DIR__.'/../laravel-app/storage|g" /home/desa7677/public_html/index.php 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan config:clear 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan route:clear 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan view:clear 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan config:cache 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan route:cache 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan view:cache 2>/dev/null || true
-    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan migrate --force 2>/dev/null || true
+    - /bin/echo "=== DEPLOY DEBUG ===" > /home/desa7677/deploy-debug.log
+    - /bin/date >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/echo "--- which rsync ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - /usr/bin/which rsync >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "rsync NOT FOUND" >> /home/desa7677/deploy-debug.log
+    - /bin/echo "--- ls repositories ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/ls -la /home/desa7677/repositories/ >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "repositories dir NOT FOUND" >> /home/desa7677/deploy-debug.log
+    - /bin/echo "--- ls repositories/laravel-app (top) ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/ls -la /home/desa7677/repositories/laravel-app/ >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "laravel-app repo NOT FOUND" >> /home/desa7677/deploy-debug.log
+    - /bin/echo "--- ls laravel-app target dir ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/ls -la /home/desa7677/laravel-app/ >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "laravel-app target NOT FOUND" >> /home/desa7677/deploy-debug.log
+    - /bin/echo "--- try rsync verbose ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - /usr/bin/rsync -av --delete --exclude='.env' --exclude='storage/logs' --exclude='storage/app' /home/desa7677/repositories/laravel-app/ /home/desa7677/laravel-app/ >> /home/desa7677/deploy-debug.log 2>&1 || /bin/echo "RSYNC FAILED with exit code $?" >> /home/desa7677/deploy-debug.log
+    - /bin/echo "--- ls laravel-app AFTER rsync ---" >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/ls -la /home/desa7677/laravel-app/ >> /home/desa7677/deploy-debug.log 2>&1
+    - /bin/echo "=== END DEBUG ===" >> /home/desa7677/deploy-debug.log 2>&1
