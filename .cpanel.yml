@@ -1,11 +1,27 @@
 ---
 deployment:
   tasks:
+    # 1. Sync repo → laravel-app (WAJIB PERTAMA - ini yang mengisi folder laravel-app)
+    - /usr/bin/rsync -a --delete --exclude='.env' --exclude='storage/logs' --exclude='storage/app' --exclude='storage/framework/sessions' /home/desa7677/repositories/laravel-app/ /home/desa7677/laravel-app/
+
+    # 2. Copy public → public_html
     - cp -a /home/desa7677/laravel-app/public/. /home/desa7677/public_html/
     - cp -a /home/desa7677/laravel-app/public/.htaccess /home/desa7677/public_html/ 2>/dev/null || true
 
-    - /usr/bin/rsync -a --delete --exclude='.env' --exclude='storage/logs' --exclude='storage/app' /home/desa7677/repositories/laravel-app/ /home/desa7677/laravel-app/
-    - cd /home/desa7677/laravel-app && /usr/local/bin/php artisan config:cache
-    - cd /home/desa7677/laravel-app && /usr/local/bin/php artisan route:cache
-    - cd /home/desa7677/laravel-app && /usr/local/bin/php artisan view:cache
-    - cd /home/desa7677/laravel-app && /usr/local/bin/php artisan migrate --force
+    # 3. Patch index.php paths (karena public_html terpisah dari laravel-app)
+    - sed -i "s|__DIR__.'/../vendor|__DIR__.'/../laravel-app/vendor|g" /home/desa7677/public_html/index.php 2>/dev/null || true
+    - sed -i "s|__DIR__.'/../bootstrap|__DIR__.'/../laravel-app/bootstrap|g" /home/desa7677/public_html/index.php 2>/dev/null || true
+    - sed -i "s|__DIR__.'/../storage|__DIR__.'/../laravel-app/storage|g" /home/desa7677/public_html/index.php 2>/dev/null || true
+
+    # 4. Clear caches
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan config:clear 2>/dev/null || /usr/local/bin/php artisan config:clear
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan route:clear 2>/dev/null || /usr/local/bin/php artisan route:clear
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan view:clear 2>/dev/null || /usr/local/bin/php artisan view:clear
+
+    # 5. Rebuild caches
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan config:cache 2>/dev/null || /usr/local/bin/php artisan config:cache
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan route:cache 2>/dev/null || /usr/local/bin/php artisan route:cache
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan view:cache 2>/dev/null || /usr/local/bin/php artisan view:cache
+
+    # 6. Migrate
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan migrate --force 2>/dev/null || /usr/local/bin/php artisan migrate --force
