@@ -1,4 +1,16 @@
 ---
 deployment:
   tasks:
-    - /bin/echo "deploy-test" > /home/desa7677/laravel-app/deploy-test.txt
+    - /usr/bin/rsync -a --delete --exclude='.env' --exclude='storage/logs' --exclude='storage/app' --exclude='storage/framework/sessions' /home/desa7677/repositories/laravel-app/ /home/desa7677/laravel-app/ || true
+    - cp -a /home/desa7677/laravel-app/public/. /home/desa7677/public_html/ || true
+    - cp -a /home/desa7677/laravel-app/public/.htaccess /home/desa7677/public_html/ 2>/dev/null || true
+    - sed -i "s|__DIR__.'/../vendor|__DIR__.'/../laravel-app/vendor|g" /home/desa7677/public_html/index.php 2>/dev/null || true
+    - sed -i "s|__DIR__.'/../bootstrap|__DIR__.'/../laravel-app/bootstrap|g" /home/desa7677/public_html/index.php 2>/dev/null || true
+    - sed -i "s|__DIR__.'/../storage|__DIR__.'/../laravel-app/storage|g" /home/desa7677/public_html/index.php 2>/dev/null || true
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan config:clear 2>/dev/null || true
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan route:clear 2>/dev/null || true
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan view:clear 2>/dev/null || true
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan config:cache 2>/dev/null || true
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan route:cache 2>/dev/null || true
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan view:cache 2>/dev/null || true
+    - cd /home/desa7677/laravel-app && /opt/alt/php84/usr/bin/php artisan migrate --force 2>/dev/null || true
